@@ -1,7 +1,6 @@
 # flask-change-microservice
 
-[![Flask Change Microservice Test](https://github.com/shyamal-anadkat/flask-change-microservice/actions/workflows/main.yml/badge.svg)](https://github.com/shyamal-anadkat/flask-change-microservice/actions/workflows/main.yml)
-
+[![Flask Change Microservice Test](https://github.com/shyamal-anadkat/flask-change-microservice/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/shyamal-anadkat/flask-change-microservice/actions/workflows/main.yml)
 Small Flask Microservice that makes change
 
 ![coursera-lab](https://user-images.githubusercontent.com/58792/108137449-df0e0300-7089-11eb-8b11-74f478b71d11.png)
