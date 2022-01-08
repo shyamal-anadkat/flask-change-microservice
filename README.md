@@ -1,9 +1,6 @@
-[![Flask Change Microservice Test](https://github.com/noahgift/flask-change-microservice/actions/workflows/main.yml/badge.svg)](https://github.com/noahgift/flask-change-microservice/actions/workflows/main.yml)
-
 # flask-change-microservice
-Small Flask Microservice that makes change
 
-*Coursera Lab:  duke-coursera-ccb-lab2*
+Small Flask Microservice that makes change
 
 ![coursera-lab](https://user-images.githubusercontent.com/58792/108137449-df0e0300-7089-11eb-8b11-74f478b71d11.png)
 
@@ -74,6 +71,123 @@ The [Python requests library](https://requests.readthedocs.io/en/latest/user/qui
 Result:
 
 `[{'5': 'quarters'}, {'1': 'nickels'}, {'4': 'pennies'}]`
+
+
+
+## Running Kubernetes Locally
+
+* Verify Kubernetes is working via docker-desktop context
+
+```bash
+(.kube-hello) ➜  kubernetes-hello-world-python-flask git:(main) kubectl get nodes
+NAME             STATUS   ROLES    AGE   VERSION
+docker-desktop   Ready    master   30d   v1.19.3
+```
+
+* Run the application in Kubernetes using the following command which tells Kubernetes to setup the load balanced service and run it:  
+
+`kubectl apply -f kube-hello-change.yaml` or run `make run-kube` which has the same command
+
+You can see from the config file that a load-balancer along with three nodes is the configured application.
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-flask-change-service
+spec:
+  selector:
+    app: hello-python
+  ports:
+  - protocol: "TCP"
+    port: 8080
+    targetPort: 8080
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-python
+spec:
+  selector:
+    matchLabels:
+      app: hello-python
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: hello-python
+    spec:
+      containers:
+      - name: flask-change
+        image: flask-change:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+```
+
+* Verify the container is running
+
+`kubectl get pods`
+
+Here is the output:
+
+```bash
+NAME                            READY   STATUS    RESTARTS   AGE
+flask-change-7b7d7f467b-26htf   1/1     Running   0          8s
+flask-change-7b7d7f467b-fh6df   1/1     Running   0          7s
+flask-change-7b7d7f467b-fpsxr   1/1     Running   0          6s
+```
+
+* Describe the load balanced service:
+
+`kubectl describe services hello-flask-change-service`
+
+You should see output similar to this:
+
+```bash
+Name:                     hello-flask-change-service
+Namespace:                default
+Labels:                   <none>
+Annotations:              <none>
+Selector:                 app=hello-python
+Type:                     LoadBalancer
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.110.14.75
+IPs:                      10.110.14.75
+LoadBalancer Ingress:     localhost
+Port:                     <unset>  8080/TCP
+TargetPort:               8080/TCP
+NodePort:                 <unset>  30676/TCP
+Endpoints:                10.1.0.6:8080,10.1.0.7:8080,10.1.0.8:8080
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+
+```
+
+Invoke the endpoint to curl it:  
+
+`make invoke`
+
+```bash
+curl http://127.0.0.1:8080/change/1/34
+[
+  {
+    "5": "quarters"
+  }, 
+  {
+    "1": "nickels"
+  }, 
+  {
+    "4": "pennies"
+  }
+]
+```
+
+To cleanup the deployment do the following: `kubectl delete deployment hello-python`
 
 ## Loadtest with Locust
 
