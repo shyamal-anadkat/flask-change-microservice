@@ -1,7 +1,8 @@
 # flask-change-microservice
 
 [![Flask Change Microservice Test](https://github.com/shyamal-anadkat/flask-change-microservice/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/shyamal-anadkat/flask-change-microservice/actions/workflows/main.yml)
-Small Flask Microservice that makes change
+
+This project uses a simple Flask app that returns correct change as the base project and converts it to Kubernetes.
 
 ![coursera-lab](https://user-images.githubusercontent.com/58792/108137449-df0e0300-7089-11eb-8b11-74f478b71d11.png)
 
@@ -12,7 +13,6 @@ Small Flask Microservice that makes change
 * Install and Test:  `make all`
 * Run it:  `python app.py`
 * Invoke it.  Options include curl, Postman, httpie.  These methods are documented below
-
 
 ### Curl
 
@@ -74,6 +74,42 @@ Result:
 `[{'5': 'quarters'}, {'1': 'nickels'}, {'4': 'pennies'}]`
 
 
+## Get Started
+
+* Create Python virtual environment `python3 -m venv ~/.kube-hello && source ~/.kube-hello/bin/activate`
+* Run `make all` to install python libraries, lint project, including `Dockerfile` and run tests
+
+## Build and Run Docker Container
+
+* Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
+
+* To build the image locally do the following.
+
+`docker build -t flask-change:latest .` or run `make build` which has the same command.
+
+* To verify container run `docker image ls`
+
+* To run do the following:  `docker run -p 8080:8080 flask-change` or run `make run` which has the same command
+
+* In a separate terminal invoke the web service via curl, or run `make invoke` which has the same command 
+
+`curl http://127.0.0.1:8080/change/1/34`
+
+```bash
+[
+  {
+    "5": "quarters"
+  }, 
+  {
+    "1": "nickels"
+  }, 
+  {
+    "4": "pennies"
+  }
+]
+```
+
+* Stop the running docker container by using `control-c` command
 
 ## Running Kubernetes Locally
 
